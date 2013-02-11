@@ -70,34 +70,27 @@ bool KeypointMatcher::matchPatch(const cv::Mat& patch, const cv::Mat& target, cv
 	if (refine_subpx)
 	{
 		//Quadratic Interpolation
-		/*
-		double interp_x, interp_y;
-		cv::Point2f interp_peak_pt;
-		if (0 < peak_pt.x && peak_pt.x < result.cols-1)
-		{
-			unsigned int y = peak_pt.y;
-			float a = result.at<float>(y,peak_pt.x-1);
-			float b = result.at<float>(y,peak_pt.x);
-			float g = result.at<float>(y,peak_pt.x+1);
-			interp_peak_pt.x = peak_pt.x + ((a-g) / ((a-2*b+g)*2));
-			
-		} else {
-			interp_peak_pt.x = static_cast<float>(peak_pt.x);
-		}
-		if (0 < peak_pt.y && peak_pt.y < result.rows-1)
-		{
-			unsigned int x = peak_pt.x;
-			float a = result.at<float>(peak_pt.y-1,x);
-			float b = result.at<float>(peak_pt.y,x);
-			float g = result.at<float>(peak_pt.y+1,x);
-			interp_peak_pt.y = peak_pt.y + ((a-g) / ((a-2*b+g)*2));
-			
-		} else {
-			interp_peak_pt.y = static_cast<float>(peak_pt.y);
-		}
-		*/
-		target_pt.x = rx + peak_x;
-		target_pt.y = ry + peak_y;
+		const double z_00   = static_cast<double>( result.at<float>(peak_y,peak_x) );
+		const double z_p10  = static_cast<double>( result.at<float>(peak_y,peak_x+1) );
+		const double z_m10  = static_cast<double>( result.at<float>(peak_y,peak_x-1) );
+		const double z_0m1  = static_cast<double>( result.at<float>(peak_y-1,peak_x) );
+		//const double z_p1m1 = static_cast<double>( result.at<float>(peak_y-1,peak_x+1) );
+		//const double z_m1m1 = static_cast<double>( result.at<float>(peak_y-1,peak_x-1) );
+		const double z_0p1  = static_cast<double>( result.at<float>(peak_y+1,peak_x) );
+		//const double z_p1p1 = static_cast<double>( result.at<float>(peak_y+1,peak_x+1) );
+		//const double z_m1p1 = static_cast<double>( result.at<float>(peak_y+1,peak_x-1) );
+
+		//const double a = z_00;
+		const double b = (z_p10 - z_m10) / 2;
+		const double c = (z_0p1 - z_0m1) / 2;
+		const double d = -z_00 + (z_p10 + z_m10) / 2;
+		const double e = -z_00 + (z_0p1 + z_0m1) / 2;
+		
+		target_pt.x = rx + peak_x + b/(2*d);
+		target_pt.y = ry + peak_y + c/(2*e);
+		//std::cout << "===" << std::endl;
+		//std::cout << target_pt.x << std::endl;
+		//std::cout << rx+peak_x << std::endl;
 	}
 	else
 	{

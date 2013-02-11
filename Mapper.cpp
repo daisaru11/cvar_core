@@ -272,7 +272,7 @@ void Mapper::updateMap()
 
 void Mapper::trackPoints(const int search_range, std::vector<Keypoint>& keypoints, int& drop_count, const int using_kp_max)
 {
-	KeypointMatcher matcher(search_range, 0.94, false);
+	KeypointMatcher matcher(search_range, 0.94, true);
 	//const cv::Mat img = getFrameImage(si);
 	const cv::Mat img = getFrameGray(0);
 
