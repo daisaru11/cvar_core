@@ -36,6 +36,7 @@ public:
 	void start(const cv::Mat& pose);
 	bool process();
 	bool findPlanar(const cv::Point2d& target_pt, cv::Mat& debug);
+	bool movePlanar(const double delta_x, const double delta_y, cv::Mat& debug);
 	bool updatePlanar(const double scale, cv::Mat& debug);
 	bool adjustPlanar(cv::Mat& debug);
 	void trackPointsBackProject(double* dst);

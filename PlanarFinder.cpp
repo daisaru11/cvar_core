@@ -135,7 +135,7 @@ bool PlanarFinder::adjustPlanar(const cv::Mat& img, const cv::Mat& pose,
 	const int line_count = edges.size();
 
 	const float kp_neighbor_r = 4.0;
-	const double len_min_th = 40;
+	const double len_min_th = 20;
 
 	bool found = false;
 
@@ -186,8 +186,9 @@ bool PlanarFinder::adjustPlanar(const cv::Mat& img, const cv::Mat& pose,
 					// len max
 					//if (dv>len_max_th || dh>len_max_th) continue;
 			
-					dst_rect[0] = pt00; dst_rect[1] = pt01;
-					dst_rect[2] = pt10; dst_rect[3] = pt11;
+					setAndAlign(dst_rect, pt00, pt01, pt10, pt11);
+					//dst_rect[0] = pt00; dst_rect[1] = pt01;
+					//dst_rect[2] = pt10; dst_rect[3] = pt11;
 					found = true;
 					goto endloop;
 
@@ -447,10 +448,9 @@ bool PlanarFinder::selectAutoRect(const cv::Mat& img,
 							cv::line(debug, pt11, pt10, colors2[h%3], 1);
 							cv::line(debug, pt10, pt00, colors2[h%3], 1);
 #endif
-							//alignRectPoint(pt00, pt01, pt11, pt10, true);
-							dst[0] = pt00; dst[1] = pt01;
-							//dst[2] = pt11; dst[3] = pt10;
-							dst[2] = pt10; dst[3] = pt11;
+							setAndAlign(dst, pt00, pt01, pt10, pt11);
+							//dst[0] = pt00; dst[1] = pt01;
+							//dst[2] = pt10; dst[3] = pt11;
 							found = true;
 							goto endloop;
 						}

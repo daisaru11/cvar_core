@@ -366,6 +366,36 @@ bool MainProcess::findPlanar(const cv::Point2d& target_pt, cv::Mat& debug)
 	return found;
 }
 
+bool MainProcess::movePlanar(const double delta_x, const double delta_y, cv::Mat& debug)
+{
+	if (!hasTrackPoints()) return false;
+	PlanarFinder finder(&debug_timer);
+
+	PlanarRect planar;
+	trackPointsBackProject(planar);
+
+	planar.translate(delta_x, delta_y);
+
+//	const cv::Mat& gray = mapper.getFrameGray(0);
+//	cv::Mat pose;
+//	getPoseRotation(pose);
+//
+//	cv::Point2d dst[4];
+//
+//	// Extract edges and make clusters
+//	finder.findEdgeClusters(gray);
+//
+//	bool found = finder.updatePlanar(gray, pose, planar, dst, debug);
+//	if (found)
+//	{
+//		trackPointsProject(dst);
+//	}
+//
+//	return found;
+	trackPointsProject(planar);
+	return true;
+}
+
 bool MainProcess::updatePlanar(const double scale, cv::Mat& debug)
 {
 	if (!hasTrackPoints()) return false;
@@ -377,22 +407,24 @@ bool MainProcess::updatePlanar(const double scale, cv::Mat& debug)
 
 	planar.scale(scale);
 
-	const cv::Mat& gray = mapper.getFrameGray(0);
-	cv::Mat pose;
-	getPoseRotation(pose);
+//	const cv::Mat& gray = mapper.getFrameGray(0);
+//	cv::Mat pose;
+//	getPoseRotation(pose);
+//
+//	cv::Point2d dst[4];
+//
+//	// Extract edges and make clusters
+//	finder.findEdgeClusters(gray);
+//
+//	bool found = finder.updatePlanar(gray, pose, planar, dst, debug);
+//	if (found)
+//	{
+//		trackPointsProject(dst);
+//	}
+//	return found;
 
-	cv::Point2d dst[4];
-
-	// Extract edges and make clusters
-	finder.findEdgeClusters(gray);
-
-	bool found = finder.updatePlanar(gray, pose, planar, dst, debug);
-	if (found)
-	{
-		trackPointsProject(dst);
-	}
-
-	return found;
+	trackPointsProject(planar);
+	return true;
 }
 
 bool MainProcess::adjustPlanar(cv::Mat& debug)

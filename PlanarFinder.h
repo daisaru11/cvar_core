@@ -61,6 +61,19 @@ public:
 		vt_seg0 = Line(p00, p01);
 		vt_seg1 = Line(p10, p11);
 	}
+	void translate(const double delta_x, const double delta_y)
+	{
+		cv::Point2d& p00 = vt_seg0.x1;
+		cv::Point2d& p01 = vt_seg0.x2;
+		cv::Point2d& p10 = vt_seg1.x1;
+		cv::Point2d& p11 = vt_seg1.x2;
+		const cv::Point2d delta(delta_x, delta_y);
+
+		p00 += delta; p01 += delta;
+		p10 += delta; p11 += delta;
+		vt_seg0 = Line(p00, p01);
+		vt_seg1 = Line(p10, p11);
+	}
 };
 
 class PlanarFinder
@@ -83,6 +96,26 @@ private:
 			const cv::Point2d& target_pt, cv::Point2d* dst, cv::Mat& debug);
 	int calcHorizontalDominantVp(const int vert_idx, const PlanarRect& target_rect);
 	void calcVpHistogram(const PlanarRect& target_rect, std::vector<std::vector<int> >& idx_hist);
+	void setAndAlign(cv::Point2d* dst_rect, const cv::Point2d& pt00, const cv::Point2d& pt01, const cv::Point2d& pt10, const cv::Point2d& pt11)
+	{
+		if (pt00.x < pt10.x) {
+			if (pt00.y < pt01.y) {
+				dst_rect[0] = pt00; dst_rect[1] = pt01;
+				dst_rect[2] = pt10; dst_rect[3] = pt11;
+			} else {
+				dst_rect[0] = pt01; dst_rect[1] = pt00;
+				dst_rect[2] = pt11; dst_rect[3] = pt10;
+			}
+		} else {
+			if (pt00.y < pt01.y) {
+				dst_rect[0] = pt10; dst_rect[1] = pt11;
+				dst_rect[2] = pt00; dst_rect[3] = pt01;
+			} else {
+				dst_rect[0] = pt11; dst_rect[1] = pt10;
+				dst_rect[2] = pt01; dst_rect[3] = pt00;
+			}
+		}
+	}
 
 	std::vector<Line> edges;
 	std::vector<cv::Point3d> vps;
